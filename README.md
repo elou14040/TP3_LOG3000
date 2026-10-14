@@ -30,14 +30,5 @@ Python 3.9 ou plus récent
 pip
 
 Installation
-bash
-# 1. Cloner le dépôt
-git clone https://github.com/<organisation-ou-utilisateur>/<nom-du-depot>.git
-cd <nom-du-depot>
+A completer
 
-# 2. (Recommandé) Créer un environnement virtuel
-python -m venv venv
-source venv/bin/activate        # Windows : venv\Scripts\activate
-
-# 3. Installer les dépendances
-pip install -r requirements.txt
