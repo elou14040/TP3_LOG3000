@@ -9,7 +9,9 @@ from app import app as flask_app
 def client():
     """Fournit un client de test Flask pour envoyer des requêtes sans lancer de serveur.
 
-    Returns:
+    Aucun paramètre.
+
+    Yields:
         flask.testing.FlaskClient: Client lié à l'application en mode test
         (les exceptions remontent au lieu de produire une page 500).
     """

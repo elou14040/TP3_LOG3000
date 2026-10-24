@@ -4,8 +4,8 @@
 
 Ce répertoire contient la suite de tests automatisés de la calculatrice. Elle vérifie que
 chaque composant respecte le comportement documenté (docstrings et README principal) et
-sert de filet de sécurité : **tous les tests doivent passer avant de fusionner une pull
-request dans `main`**.
+sert de filet de sécurité : chaque correctif doit faire passer ses tests et ne pas
+introduire de régression. **Tous les tests doivent passer avant une livraison.**
 
 ## État actuel
 
@@ -46,14 +46,14 @@ ajoute la racine au chemin d'import, ce qui permet d'écrire `from app import ca
 - L'affichage dans un vrai navigateur (événements de clic réels, rendu) : le JavaScript est
   exécuté par Node.js, pas par un navigateur. Il faudrait un outil comme Selenium ou Playwright.
 - Le rendu visuel du CSS.
-- Les cas hors portée du projet (nombres négatifs, expressions à plusieurs opérateurs),
-  sauf pour vérifier qu'ils produisent bien une erreur.
+- La saisie de nombres négatifs et l'enchaînement après un résultat négatif.
+- Les calculs à plusieurs opérateurs; un test vérifie qu'ils sont rejetés.
 
 ## Dépendances et hypothèses
 
 - **pytest** ≥ 8 (dans `requirements.txt`).
-- **Node.js** (facultatif) pour `test_interface_js.py` : sans Node.js, ces tests sont ignorés
-  (`skipped`) au lieu d'échouer.
+- **Node.js** pour exécuter les six tests de `test_interface_js.py` : sans Node.js,
+  pytest indique **45 passed, 6 skipped**. Installer Node.js pour vérifier les 51 tests.
 - Les tests se lancent depuis la racine du dépôt (là où se trouve `pytest.ini`).
 - Les résultats attendus proviennent des docstrings de `operators.py` / `app.py` et des
   exemples du README principal : si le comportement voulu change, il faut mettre à jour la

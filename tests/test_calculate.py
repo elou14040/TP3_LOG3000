@@ -19,22 +19,39 @@ from app import calculate
     ],
 )
 def test_calculate_basic_operations(expr, expected):
-    """Chaque opérateur donne le résultat attendu (exemples du README)."""
+    """Chaque opérateur donne le résultat attendu (exemples du README).
+
+    Args:
+        expr: str: Expression du cas de test.
+        expected: float: Résultat attendu.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     assert calculate(expr) == expected
 
 
 def test_calculate_ignores_spaces():
-    """Les espaces autour de l'opérateur et des opérandes sont ignorés."""
+    """Les espaces autour de l'opérateur et des opérandes sont ignorés.
+
+    Aucun paramètre ni valeur de retour; vérification par assertions.
+    """
     assert calculate(" 12 + 3 ") == 15.0
 
 
 def test_calculate_decimals():
-    """Les opérandes décimaux sont acceptés."""
+    """Les opérandes décimaux sont acceptés.
+
+    Aucun paramètre ni valeur de retour; vérification par assertions.
+    """
     assert calculate("2.5+0.5") == 3.0
 
 
 def test_calculate_returns_float():
-    """Le résultat est toujours un ``float``, même pour des opérandes entiers."""
+    """Le résultat est toujours un ``float``, même pour des opérandes entiers.
+
+    Aucun paramètre ni valeur de retour; vérification par assertions.
+    """
     assert isinstance(calculate("2+2"), float)
 
 
@@ -50,12 +67,23 @@ def test_calculate_returns_float():
     ],
 )
 def test_calculate_invalid_expressions(expr, message):
-    """Chaque expression invalide lève ``ValueError`` avec le message documenté dans le README."""
+    """Chaque expression invalide lève ``ValueError`` avec le message documenté dans le README.
+
+    Args:
+        expr: str: Expression du cas de test.
+        message: str: Message d’erreur attendu.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     with pytest.raises(ValueError, match=message):
         calculate(expr)
 
 
 def test_calculate_division_by_zero():
-    """La division par zéro remonte en ``ZeroDivisionError`` (gérée ensuite par la route)."""
+    """La division par zéro remonte en ``ZeroDivisionError`` (gérée ensuite par la route).
+
+    Aucun paramètre ni valeur de retour; vérification par assertions.
+    """
     with pytest.raises(ZeroDivisionError):
         calculate("5/0")

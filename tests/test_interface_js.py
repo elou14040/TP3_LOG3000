@@ -49,35 +49,77 @@ def click(response, clicks):
 
 
 def test_digits_build_expression_on_empty_display(client):
-    """Sur une page neuve, les chiffres et l'opérateur s'ajoutent à l'écran."""
+    """Sur une page neuve, les chiffres et l'opérateur s'ajoutent à l'écran.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     assert click(client.get("/"), ["1", "2", "+", "3"]) == "12+3"
 
 
 def test_digit_after_result_starts_new_calculation(client):
-    """Après un résultat, un chiffre remplace l'écran au lieu de s'ajouter au résultat."""
+    """Après un résultat, un chiffre remplace l'écran au lieu de s'ajouter au résultat.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     response = client.post("/", data={"display": "7+5"})
     assert click(response, ["3"]) == "3"
 
 
 def test_operator_after_result_continues_from_result(client):
-    """Après un résultat, un opérateur s'ajoute au résultat pour enchaîner un calcul."""
+    """Après un résultat, un opérateur s'ajoute au résultat pour enchaîner un calcul.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     response = client.post("/", data={"display": "7+5"})
     assert click(response, ["+", "5"]) == "12.0+5"
 
 
 def test_digit_after_error_starts_new_calculation(client):
-    """Après un message d'erreur, un chiffre remplace le message."""
+    """Après un message d'erreur, un chiffre remplace le message.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     response = client.post("/", data={"display": "5+"})
     assert click(response, ["4"]) == "4"
 
 
 def test_second_digit_after_result_is_appended(client):
-    """Une fois le nouveau calcul commencé, les chiffres suivants s'ajoutent normalement."""
+    """Une fois le nouveau calcul commencé, les chiffres suivants s'ajoutent normalement.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     response = client.post("/", data={"display": "7+5"})
     assert click(response, ["3", "4"]) == "34"
 
 
 def test_clear_then_digit(client):
-    """Le bouton C vide l'écran, puis le chiffre suivant s'y ajoute."""
+    """Le bouton C vide l'écran, puis le chiffre suivant s'y ajoute.
+
+    Args:
+        client: flask.testing.FlaskClient: Client de test Flask fourni par pytest.
+
+    Returns:
+        None: Vérifie le résultat par assertions.
+    """
     response = client.post("/", data={"display": "7+5"})
     assert click(response, ["C", "9"]) == "9"
