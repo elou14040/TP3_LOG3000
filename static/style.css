@@ -1,3 +1,9 @@
+/*
+ * Feuille de style de la calculatrice (templates/index.html).
+ * Thème sombre ; les opérateurs sont mis en évidence en orange (.operator).
+ */
+
+/* Centre la calculatrice horizontalement et verticalement dans la fenêtre. */
 body {
    font-family: Arial, sans-serif;
    background-color: #f0f0f0;
@@ -8,6 +14,7 @@ body {
    margin: 0;
 }
 
+/* Conteneur principal ; max-width garde une taille lisible sur grand écran. */
 .calculator {
    width: 100%;
    max-width: 600px;
@@ -24,6 +31,7 @@ h1 {
    font-size: 36px;
 }
 
+/* Écran : aligné à droite comme une calculatrice physique. */
 #display {
    width: 100%;
    height: 80px;
@@ -37,12 +45,14 @@ h1 {
    color: #fff;
 }
 
+/* Grille de 4 colonnes égales pour les 16 boutons. */
 .buttons {
    display: grid;
    grid-template-columns: repeat(4, 1fr);
    gap: 15px;
 }
 
+/* Style commun à tous les boutons (chiffres et opérateurs). */
 .btn {
    width: 100%;
    padding: 30px;
@@ -59,6 +69,7 @@ h1 {
    background-color: #555;
 }
 
+/* Déclaré après .btn pour que la couleur orange remplace le gris par défaut. */
 .operator {
    background-color: #ff9500;
 }
@@ -67,6 +78,7 @@ h1 {
    background-color: #e68a00;
 }
 
+/* États :active : retour visuel lors du clic. */
 .btn:active {
    background-color: #444;
 }

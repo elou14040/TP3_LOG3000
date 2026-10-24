@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!--
+  Interface de la calculatrice (gabarit Jinja2 rendu par app.py, route "/").
+  Les boutons construisent l'expression côté client (JavaScript) ; le bouton "="
+  soumet le formulaire en POST et le serveur renvoie la page avec le résultat
+  injecté dans l'écran via la variable Jinja "result".
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,9 +15,12 @@
 <body>
 <div class="calculator">
    <h1>Flask Calculator</h1>
+   <!-- Le formulaire est soumis à la même route ("/") ; seul le champ "display" est lu par le serveur. -->
    <form method="POST">
+      <!-- readonly : la saisie passe uniquement par les boutons, pour limiter les expressions invalides. -->
       <input type="text" name="display" id="display" value="{{ result }}" readonly>
 
+      <!-- Grille 4 x 4 : chiffres, opérateurs, effacement (C) et calcul (=). -->
       <div class="buttons">
          <button type="button" class="btn" onclick="appendToDisplay('1')">1</button>
          <button type="button" class="btn" onclick="appendToDisplay('2')">02</button>
@@ -30,6 +39,7 @@
 
          <button type="button" class="btn" onclick="appendToDisplay('0')">0</button>
          <button type="button" class="btn" onclick="clearDisplay()">C</button>
+         <!-- Seul bouton de type "submit" : c'est lui qui envoie l'expression au serveur. -->
          <button type="submit" class="btn operator">=</button>
          <button type="button" class="btn operator" onclick="appendToDisplay('/')"></button>
       </div>
@@ -37,11 +47,20 @@
 </div>
 
 <script>
+   /**
+    * Ajoute un caractère (chiffre ou opérateur) à la fin de l'écran.
+    * @param {string} value - Caractère à ajouter à l'expression.
+    * @returns {void}
+    */
    function appendToDisplay(value) {
       const display = document.getElementById('display');
       display.value += value;
    }
 
+   /**
+    * Vide l'écran de la calculatrice (bouton C), sans contacter le serveur.
+    * @returns {void}
+    */
    function clearDisplay() {
       document.getElementById('display').value = '';
    }
