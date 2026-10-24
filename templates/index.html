@@ -47,13 +47,25 @@
 </div>
 
 <script>
+   // Vrai quand l'écran affiche un résultat ou une erreur renvoyés par le serveur :
+   // le prochain chiffre doit alors commencer un nouveau calcul au lieu de s'y ajouter.
+   let showingResult = {{ 'true' if result != '' else 'false' }};
+
    /**
     * Ajoute un caractère (chiffre ou opérateur) à la fin de l'écran.
+    * Après un résultat, un chiffre remplace l'écran (nouveau calcul) alors qu'un
+    * opérateur s'ajoute au résultat (enchaînement). Après une erreur, l'écran est
+    * toujours remplacé.
     * @param {string} value - Caractère à ajouter à l'expression.
     * @returns {void}
     */
    function appendToDisplay(value) {
       const display = document.getElementById('display');
+      const isOperator = '+-*/'.includes(value);
+      if (showingResult && (!isOperator || display.value.startsWith('Error'))) {
+         display.value = '';
+      }
+      showingResult = false;
       display.value += value;
    }
 
@@ -63,6 +75,7 @@
     */
    function clearDisplay() {
       document.getElementById('display').value = '';
+      showingResult = false;
    }
 </script>
 </body>
