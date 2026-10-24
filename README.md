@@ -42,14 +42,23 @@ issues, une branche par correctif, pull requests et revues de code.
 
 - Les quatre opérations de base : addition (`+`), soustraction (`-`), multiplication (`*`) et
   division (`/`).
-- Les nombres entiers et décimaux (p. ex. `2.5`).
+- La saisie de nombres entiers ; les résultats peuvent être décimaux, comme sur une vraie
+  calculatrice (p. ex. `6/4` → `1.5`).
 - **Une seule opération par calcul**, de la forme `nombre opérateur nombre` (p. ex. `12+3`).
 - Les messages d'erreur affichés à l'écran pour toute expression invalide.
 
 **Hors portée (limites connues) :**
 
+- La saisie de nombres décimaux : il n'y a pas de bouton `.`. Un résultat décimal peut
+  toutefois servir de point de départ à l'opération suivante (p. ex. `1.5` puis `*`, `2`).
 - Les expressions à plusieurs opérateurs (`1+2+3`) et les parenthèses.
-- Les nombres négatifs saisis directement (`-5+3`, `5*-3`).
+- Les nombres négatifs, qui ne sont pas requis pour ce projet :
+  - ils ne peuvent pas être saisis directement (`-5+3`, `5*-3`) ;
+  - un **résultat** négatif ne peut pas servir à enchaîner : `4-9` donne `-5.0`, puis `+`, `3`
+    affiche `Error: only one operator is allowed`, car le signe `-` est lu comme un second
+    opérateur. Appuyez sur `C` pour recommencer.
+- Les très grands résultats affichés en notation scientifique (p. ex. `9.9999999998e+21`) ne
+  peuvent pas non plus servir à enchaîner, pour la même raison (le `+` de l'exposant).
 - Les fonctions avancées (puissance, racine, pourcentage, mémoire).
 - La saisie au clavier : l'écran est en lecture seule et se remplit uniquement par les boutons.
 
@@ -179,7 +188,8 @@ faites `Ctrl + C` dans le terminal.
 Le résultat reste affiché à l'écran :
 
 - un **opérateur** tapé ensuite s'ajoute au résultat pour enchaîner une opération
-  (p. ex. `10.0` puis `+`, `5`, `=`) ;
+  (p. ex. `10.0` puis `+`, `5`, `=`), sauf si le résultat est négatif (voir
+  [Portée](#portée)) ;
 - un **chiffre** tapé ensuite commence un nouveau calcul : il remplace le résultat, sans
   avoir besoin d'appuyer sur `C`. Il en va de même après un message d'erreur.
 
