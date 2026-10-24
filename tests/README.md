@@ -9,8 +9,9 @@ request dans `main`**.
 
 ## État actuel
 
-**45 tests, tous verts** sur `main`. Lors de la première exécution, 12 tests échouaient et
-ont révélé 5 bogues (issues #1 à #5), tous corrigés depuis — voir la section
+**51 tests, tous verts** sur `main`. Lors de la première exécution, 12 tests sur 45 échouaient et
+ont révélé 5 bogues (issues #1 à #5). Un sixième bogue (#12), dans le JavaScript, a ensuite été
+reproduit par `test_interface_js.py`. Tous sont corrigés depuis — voir la section
 [Historique des correctifs](../README.md#historique-des-correctifs) du README principal.
 
 ## Exécuter les tests
@@ -37,12 +38,13 @@ ajoute la racine au chemin d'import, ce qui permet d'écrire `from app import ca
 | `test_operators.py`  | **Unitaire** : `add`, `subtract`, `multiply`, `divide` de `operators.py`, appelées directement. Résultats usuels, décimaux, ordre des opérandes, produit par zéro, quotient réel, division par zéro. |
 | `test_calculate.py`  | **Analyse d'expression** : `calculate` de `app.py`. Les 4 opérations de bout en bout, espaces ignorés, décimaux, type `float` du résultat, et le message `ValueError` de chaque expression invalide (vide, plusieurs opérateurs, sans opérateur, opérateur au début/à la fin, opérande non numérique). |
 | `test_app.py`        | **Intégration** : route `/`. GET (page 200, écran vide, CSS chargé), POST valide (résultat affiché), POST invalide et division par zéro (message `Error: ...` au lieu d'une page 500), POST sans champ `display`. |
+| `test_interface_js.py` | **Comportement JavaScript** : le `<script>` de la page rendue (GET ou POST) est exécuté par Node.js avec un faux `document` réduit au champ `#display`, et des clics sont simulés. Vérifie qu'un chiffre après un résultat ou une erreur commence un nouveau calcul, qu'un opérateur enchaîne sur le résultat et que `C` efface. |
 | `test_interface.py`  | **Gabarit HTML** : `templates/index.html` analysé sans navigateur. Chaque bouton affiche exactement le caractère qu'il ajoute à l'écran (un cas par bouton), les 10 chiffres et 4 opérateurs sont présents, ainsi que `C` et `=`. |
 
 ### Non couvert
 
-- Le comportement JavaScript dans un vrai navigateur (clics, effacement) : il faudrait un
-  outil comme Selenium ou Playwright.
+- L'affichage dans un vrai navigateur (événements de clic réels, rendu) : le JavaScript est
+  exécuté par Node.js, pas par un navigateur. Il faudrait un outil comme Selenium ou Playwright.
 - Le rendu visuel du CSS.
 - Les cas hors portée du projet (nombres négatifs, expressions à plusieurs opérateurs),
   sauf pour vérifier qu'ils produisent bien une erreur.
@@ -50,6 +52,8 @@ ajoute la racine au chemin d'import, ce qui permet d'écrire `from app import ca
 ## Dépendances et hypothèses
 
 - **pytest** ≥ 8 (dans `requirements.txt`).
+- **Node.js** (facultatif) pour `test_interface_js.py` : sans Node.js, ces tests sont ignorés
+  (`skipped`) au lieu d'échouer.
 - Les tests se lancent depuis la racine du dépôt (là où se trouve `pytest.ini`).
 - Les résultats attendus proviennent des docstrings de `operators.py` / `app.py` et des
   exemples du README principal : si le comportement voulu change, il faut mettre à jour la
