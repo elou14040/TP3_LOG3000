@@ -22,6 +22,7 @@ de l'équipe.
 5. [Utilisation](#utilisation)
 6. [Tests](#tests)
 7. [Flux de contribution](#flux-de-contribution)
+8. [Historique des correctifs](#historique-des-correctifs)
 
 ## But et portée du projet
 
@@ -122,10 +123,18 @@ python3 -m pip --version
 
 2. **Créer et activer un environnement virtuel** (recommandé, pour isoler les dépendances)
 
+   macOS / Linux :
+
    ```bash
    python3 -m venv venv
-   source venv/bin/activate        # macOS / Linux
-   venv\Scripts\activate           # Windows
+   source venv/bin/activate
+   ```
+
+   Windows :
+
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
    ```
 
    Le nom `(venv)` doit apparaître au début de l'invite de commande.
@@ -171,7 +180,7 @@ de celui-ci (p. ex. `10.0` puis `+`, `5`, `=`).
 
 ### Exemples
 
-| Expression | Résultat attendu |
+| Expression | Résultat affiché |
 |------------|------------------|
 | `7+5`      | `12.0`           |
 | `9-4`      | `5.0`            |
@@ -188,7 +197,7 @@ Les résultats sont toujours affichés en nombres décimaux (`float`).
 | `Error: only one operator is allowed` | L'expression contient plus d'un opérateur (p. ex. `1+2+3`). |
 | `Error: invalid expression format`  | Pas d'opérateur, ou opérateur au début/à la fin (p. ex. `5+`, `-3`). |
 | `Error: operands must be numbers`   | Un opérande n'est pas un nombre valide (p. ex. `1.2.3+4`). |
-| `Error: ...` (division)             | Division par zéro (p. ex. `5/0`). |
+| `Error: float division by zero`     | Division par zéro (p. ex. `5/0`). |
 
 ## Tests
 
@@ -201,13 +210,13 @@ d'ajouter la racine au chemin d'import (pour `from app import calculate`).
 
 Depuis la racine du dépôt, avec l'environnement virtuel activé :
 
-```bash
-python -m pytest                                         # exécuter toute la suite
-python -m pytest -v                                      # afficher le nom et le statut de chaque test
-python -m pytest tests/test_operators.py                 # exécuter un seul fichier
-python -m pytest tests/test_operators.py::test_subtract  # exécuter un seul test
-python -m pytest -k subtract                             # exécuter les tests dont le nom contient « subtract »
-```
+| Commande | Effet |
+|----------|-------|
+| `python -m pytest` | Exécuter toute la suite |
+| `python -m pytest -v` | Afficher le nom et le statut de chaque test |
+| `python -m pytest tests/test_operators.py` | Exécuter un seul fichier |
+| `python -m pytest tests/test_operators.py::test_subtract` | Exécuter un seul test |
+| `python -m pytest -k subtract` | Exécuter les tests dont le nom contient « subtract » |
 
 À la fin, pytest affiche un résumé, p. ex. `45 passed`. En cas d'échec, chaque test fautif
 est listé (`FAILED ...`) avec la valeur obtenue et la valeur attendue.
@@ -253,7 +262,7 @@ Une branche par issue, créée à partir d'un `main` à jour :
 ```bash
 git checkout main
 git pull origin main
-git checkout -b fix/12-subtract-operandes
+git checkout -b fix/1-subtract-operandes
 ```
 
 Convention de nommage : `<type>/<numéro-issue>-<description-courte>`
@@ -272,22 +281,38 @@ Convention de nommage : `<type>/<numéro-issue>-<description-courte>`
   l'issue :
 
   ```
-  Corriger subtract pour retourner a - b (#12)
+  Corriger subtract pour retourner a - b (#1)
 
-  La fonction retournait b - a, ce qui inversait le signe du résultat.
-  Le test test_subtract passe maintenant.
+  La fonction retournait b - a, ce qui inversait le signe de toute soustraction.
+  Les tests test_subtract et test_subtract_negative_result passent maintenant.
   ```
 
 - Avant de pousser, lancer `python -m pytest` : tous les tests doivent passer.
 
 ```bash
-git push -u origin fix/12-subtract-operandes
+git push -u origin fix/1-subtract-operandes
 ```
 
 ### 4. Ouvrir une pull request
 
 - Base : `main`. Titre clair et description qui indique le changement, la façon de le
-  vérifier, et `Closes #12` pour fermer automatiquement l'issue à la fusion.
+  vérifier, et `Closes #1` pour fermer automatiquement l'issue à la fusion.
 - Au moins **un autre membre** de l'équipe relit la PR et l'approuve.
 - La PR est fusionnée seulement après l'approbation et si tous les tests passent ; la branche
   est ensuite supprimée.
+
+## Historique des correctifs
+
+La première exécution de la suite de tests (12 échecs sur 45) a révélé 5 bogues. Chacun a
+été suivi par une issue, corrigé dans sa propre branche et fusionné par pull request.
+La suite complète passe désormais entièrement (**45 passed**).
+
+| Issue | Bogue | Correctif | Pull request |
+|-------|-------|-----------|--------------|
+| [#1](https://github.com/elou14040/TP3_LOG3000/issues/1) | `subtract` retournait `b - a` | `operators.py` : `a - b` | [#6](https://github.com/elou14040/TP3_LOG3000/pull/6) |
+| [#2](https://github.com/elou14040/TP3_LOG3000/issues/2) | `multiply` calculait une puissance (`**`) | `operators.py` : `a * b` | [#7](https://github.com/elou14040/TP3_LOG3000/pull/7) |
+| [#3](https://github.com/elou14040/TP3_LOG3000/issues/3) | `divide` faisait une division entière (`//`) | `operators.py` : `a / b` | [#8](https://github.com/elou14040/TP3_LOG3000/pull/8) |
+| [#4](https://github.com/elou14040/TP3_LOG3000/issues/4) | Boutons « 2 » et « 8 » libellés `02` et `88` | `templates/index.html` | [#9](https://github.com/elou14040/TP3_LOG3000/pull/9) |
+| [#5](https://github.com/elou14040/TP3_LOG3000/issues/5) | Boutons `*` et `/` sans libellé | `templates/index.html` | [#10](https://github.com/elou14040/TP3_LOG3000/pull/10) |
+
+Chaque pull request documente la sortie des tests avant et après le correctif.

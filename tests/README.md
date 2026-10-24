@@ -7,18 +7,24 @@ chaque composant respecte le comportement documenté (docstrings et README princ
 sert de filet de sécurité : **tous les tests doivent passer avant de fusionner une pull
 request dans `main`**.
 
+## État actuel
+
+**45 tests, tous verts** sur `main`. Lors de la première exécution, 12 tests échouaient et
+ont révélé 5 bogues (issues #1 à #5), tous corrigés depuis — voir la section
+[Historique des correctifs](../README.md#historique-des-correctifs) du README principal.
+
 ## Exécuter les tests
 
 Depuis la **racine du dépôt**, avec l'environnement virtuel activé et les dépendances
 installées (`pip install -r requirements.txt`, qui inclut pytest) :
 
-```bash
-python -m pytest                              # toute la suite
-python -m pytest -v                           # détail de chaque test
-python -m pytest tests/test_operators.py      # un seul fichier
-python -m pytest tests/test_operators.py::test_subtract   # un seul test
-python -m pytest -k divide                    # les tests dont le nom contient « divide »
-```
+| Commande | Effet |
+|----------|-------|
+| `python -m pytest` | Toute la suite |
+| `python -m pytest -v` | Détail de chaque test |
+| `python -m pytest tests/test_operators.py` | Un seul fichier |
+| `python -m pytest tests/test_operators.py::test_subtract` | Un seul test |
+| `python -m pytest -k divide` | Les tests dont le nom contient « divide » |
 
 Le fichier `pytest.ini` à la racine configure pytest : il cherche les tests dans `tests/` et
 ajoute la racine au chemin d'import, ce qui permet d'écrire `from app import calculate`.
