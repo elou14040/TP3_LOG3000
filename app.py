@@ -80,6 +80,8 @@ def index():
     - ``POST`` : lit le champ ``display`` du formulaire, l'évalue avec
       ``calculate`` et réaffiche la page avec le résultat.
 
+    Aucun argument Python; les entrées proviennent de la requête Flask.
+
     Returns:
         str: La page HTML ``index.html`` rendue, dont l'écran contient le
         résultat du calcul ou un message ``"Error: ..."``.

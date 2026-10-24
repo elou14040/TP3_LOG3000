@@ -47,12 +47,12 @@ issues, une branche par correctif, pull requests et revues de code.
 - **Une seule opération par calcul**, de la forme `nombre opérateur nombre` (p. ex. `12+3`).
 - Les messages d'erreur affichés à l'écran pour toute expression invalide.
 
-**Hors portée (limites connues) :**
+**Limites connues :**
 
 - La saisie de nombres décimaux : il n'y a pas de bouton `.`. Un résultat décimal peut
   toutefois servir de point de départ à l'opération suivante (p. ex. `1.5` puis `*`, `2`).
 - Les expressions à plusieurs opérateurs (`1+2+3`) et les parenthèses.
-- Les nombres négatifs, qui ne sont pas requis pour ce projet :
+- La saisie et la réutilisation de nombres négatifs :
   - ils ne peuvent pas être saisis directement (`-5+3`, `5*-3`) ;
   - un **résultat** négatif ne peut pas servir à enchaîner : `4-9` donne `-5.0`, puis `+`, `3`
     affiche `Error: only one operator is allowed`, car le signe `-` est lu comme un second
@@ -113,6 +113,7 @@ dépendances et ses hypothèses.
 - [Git](https://git-scm.com/)
 - [Python](https://www.python.org/) 3.9 ou plus récent
 - pip (inclus avec Python)
+- Node.js pour les six tests JavaScript (sans Node.js : 45 tests réussis et 6 ignorés)
 
 Pour vérifier les versions installées :
 
@@ -252,15 +253,16 @@ sans navigateur) et le rendu visuel du CSS. Les détails et hypothèses sont dan
 
 ### Règle de l'équipe
 
-Tous les tests doivent passer avant qu'une pull request soit fusionnée dans `main`. Lorsqu'un
-bogue est découvert, on écrit d'abord un test qui échoue, puis on ouvre une issue qui le
-référence (voir [Flux de contribution](#flux-de-contribution)).
+Chaque correctif doit faire passer les tests associés au problème et ne pas introduire
+de régression. La suite complète doit être verte avant de livrer une version.
+Lorsqu'un bogue est découvert, on écrit un test qui le reproduit et on ouvre une issue
+qui le référence (voir [Flux de contribution](#flux-de-contribution)).
 
 ## Flux de contribution
 
-La branche `main` contient toujours une version stable dont **tous les tests passent**.
-On ne pousse jamais directement sur `main` : tout changement passe par une issue, une
-branche et une pull request.
+La branche `main` regroupe le travail intégré de l'équipe. Pour proposer un changement,
+créez une branche dédiée, puis ouvrez une pull request. Chaque correctif est associé à
+une issue afin de relier le problème, sa reproduction et sa résolution.
 
 ### 1. Ouvrir une issue
 
@@ -303,7 +305,8 @@ Convention de nommage : `<type>/<numéro-issue>-<description-courte>`
   Les tests test_subtract et test_subtract_negative_result passent maintenant.
   ```
 
-- Avant de pousser, lancer `python -m pytest` : tous les tests doivent passer.
+- Avant de pousser, exécuter les tests du correctif, puis `python -m pytest` pour vérifier
+  l'absence de régression. Signaler dans la PR les éventuels échecs liés à des issues ouvertes.
 
 ```bash
 git push -u origin fix/1-subtract-operandes
@@ -314,8 +317,9 @@ git push -u origin fix/1-subtract-operandes
 - Base : `main`. Titre clair et description qui indique le changement, la façon de le
   vérifier, et `Closes #1` pour fermer automatiquement l'issue à la fusion.
 - Au moins **un autre membre** de l'équipe relit la PR et l'approuve.
-- La PR est fusionnée seulement après l'approbation et si tous les tests passent ; la branche
-  est ensuite supprimée.
+- La PR est fusionnée après la revue, lorsque les tests du correctif passent et que les
+  résultats de la suite complète ont été examinés ; la branche est ensuite supprimée.
+  Avant une livraison, tous les tests de la suite complète doivent passer.
 
 ## Historique des correctifs
 
