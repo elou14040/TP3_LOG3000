@@ -84,7 +84,8 @@ index.html + style.css
     ├── test_operators.py
     ├── test_calculate.py
     ├── test_app.py
-    └── test_interface.py
+    ├── test_interface.py
+    └── test_interface_js.py
 ```
 
 ### Modules backend (racine)
@@ -175,8 +176,12 @@ faites `Ctrl + C` dans le terminal.
 4. Cliquez sur `=` : le résultat s'affiche à l'écran.
 5. Cliquez sur `C` pour effacer l'écran.
 
-Le résultat reste affiché à l'écran : vous pouvez enchaîner une nouvelle opération à partir
-de celui-ci (p. ex. `10.0` puis `+`, `5`, `=`).
+Le résultat reste affiché à l'écran :
+
+- un **opérateur** tapé ensuite s'ajoute au résultat pour enchaîner une opération
+  (p. ex. `10.0` puis `+`, `5`, `=`) ;
+- un **chiffre** tapé ensuite commence un nouveau calcul : il remplace le résultat, sans
+  avoir besoin d'appuyer sur `C`. Il en va de même après un message d'erreur.
 
 ### Exemples
 
@@ -218,7 +223,7 @@ Depuis la racine du dépôt, avec l'environnement virtuel activé :
 | `python -m pytest tests/test_operators.py::test_subtract` | Exécuter un seul test |
 | `python -m pytest -k subtract` | Exécuter les tests dont le nom contient « subtract » |
 
-À la fin, pytest affiche un résumé, p. ex. `45 passed`. En cas d'échec, chaque test fautif
+À la fin, pytest affiche un résumé, p. ex. `51 passed`. En cas d'échec, chaque test fautif
 est listé (`FAILED ...`) avec la valeur obtenue et la valeur attendue.
 
 ### Ce qui est testé
@@ -229,10 +234,11 @@ est listé (`FAILED ...`) avec la valeur obtenue et la valeur attendue.
 | `tests/test_calculate.py`   | Analyse       | `calculate` : les 4 opérations de bout en bout, espaces ignorés, décimaux, résultat de type `float`, et le message d'erreur de chaque expression invalide (vide, plusieurs opérateurs, sans opérateur, opérateur au début/à la fin, opérande non numérique). |
 | `tests/test_app.py`         | Intégration   | Route `/` : GET (page affichée, écran vide, CSS chargé), POST valide (résultat affiché), POST invalide et division par zéro (message `Error: ...` au lieu d'une page d'erreur). |
 | `tests/test_interface.py`   | Gabarit HTML  | `templates/index.html` : chaque bouton affiche exactement le caractère qu'il ajoute à l'écran, et tous les chiffres, opérateurs, `C` et `=` sont présents. |
+| `tests/test_interface_js.py` | Comportement JS | Le script de la page est exécuté avec Node.js et des clics sont simulés : un chiffre après un résultat ou une erreur commence un nouveau calcul, un opérateur enchaîne, `C` efface. Ignoré si Node.js n'est pas installé. |
 | `tests/conftest.py`         | —             | Fixture `client` partagée (client de test Flask, sans lancer de serveur). |
 
-**Non couvert :** le JavaScript dans un vrai navigateur (clics, effacement) et le rendu visuel
-du CSS. Les détails et hypothèses sont dans [`tests/README.md`](tests/README.md).
+**Non couvert :** l'affichage dans un vrai navigateur (le JavaScript est testé avec Node.js,
+sans navigateur) et le rendu visuel du CSS. Les détails et hypothèses sont dans [`tests/README.md`](tests/README.md).
 
 ### Règle de l'équipe
 
@@ -303,9 +309,11 @@ git push -u origin fix/1-subtract-operandes
 
 ## Historique des correctifs
 
-La première exécution de la suite de tests (12 échecs sur 45) a révélé 5 bogues. Chacun a
+La première exécution de la suite de tests (12 échecs sur 45) a révélé 5 bogues. Un sixième
+(#12), signalé à l'usage, se trouvait dans le JavaScript, que la suite ne couvrait pas encore :
+des tests exécutant le script avec Node.js ont été ajoutés pour le reproduire. Chaque bogue a
 été suivi par une issue, corrigé dans sa propre branche et fusionné par pull request.
-La suite complète passe désormais entièrement (**45 passed**).
+La suite complète passe désormais entièrement (**51 passed**).
 
 | Issue | Bogue | Correctif | Pull request |
 |-------|-------|-----------|--------------|
@@ -314,5 +322,6 @@ La suite complète passe désormais entièrement (**45 passed**).
 | [#3](https://github.com/elou14040/TP3_LOG3000/issues/3) | `divide` faisait une division entière (`//`) | `operators.py` : `a / b` | [#8](https://github.com/elou14040/TP3_LOG3000/pull/8) |
 | [#4](https://github.com/elou14040/TP3_LOG3000/issues/4) | Boutons « 2 » et « 8 » libellés `02` et `88` | `templates/index.html` | [#9](https://github.com/elou14040/TP3_LOG3000/pull/9) |
 | [#5](https://github.com/elou14040/TP3_LOG3000/issues/5) | Boutons `*` et `/` sans libellé | `templates/index.html` | [#10](https://github.com/elou14040/TP3_LOG3000/pull/10) |
+| [#12](https://github.com/elou14040/TP3_LOG3000/issues/12) | Un chiffre tapé après un résultat s'ajoutait au résultat (`12.0` puis `3` → `12.03`) | `templates/index.html` : `appendToDisplay` | [#13](https://github.com/elou14040/TP3_LOG3000/pull/13) |
 
 Chaque pull request documente la sortie des tests avant et après le correctif.
