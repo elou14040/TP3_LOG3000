@@ -72,12 +72,18 @@ index.html + style.css
 .
 ├── app.py              # Serveur Flask : route "/" et analyse de l'expression (calculate)
 ├── operators.py        # Opérations arithmétiques : add, subtract, multiply, divide
-├── requirements.txt    # Dépendances Python
+├── requirements.txt    # Dépendances Python (Flask, pytest)
+├── pytest.ini          # Configuration de pytest
 ├── templates/          # Gabarits HTML (interface)       → voir templates/README.md
 │   └── index.html
 ├── static/             # Fichiers statiques (style)      → voir static/README.md
 │   └── style.css
 └── tests/              # Tests automatisés (pytest)      → voir tests/README.md
+    ├── conftest.py
+    ├── test_operators.py
+    ├── test_calculate.py
+    ├── test_app.py
+    └── test_interface.py
 ```
 
 ### Modules backend (racine)
@@ -187,19 +193,43 @@ Les résultats sont toujours affichés en nombres décimaux (`float`).
 ## Tests
 
 Les tests automatisés se trouvent dans le répertoire [`tests/`](tests/) et utilisent
-[pytest](https://docs.pytest.org/). Voir [`tests/README.md`](tests/README.md) pour le détail
-de ce qui est couvert.
+[pytest](https://docs.pytest.org/), installé avec `pip install -r requirements.txt`.
+Le fichier `pytest.ini` à la racine indique à pytest de chercher les tests dans `tests/` et
+d'ajouter la racine au chemin d'import (pour `from app import calculate`).
+
+### Exécuter les tests
 
 Depuis la racine du dépôt, avec l'environnement virtuel activé :
 
 ```bash
-python -m pytest                     # exécuter toute la suite
-python -m pytest -v                  # afficher le nom et le statut de chaque test
-python -m pytest tests/test_operators.py   # exécuter un seul fichier
-python -m pytest -k subtract         # exécuter les tests dont le nom contient « subtract »
+python -m pytest                                         # exécuter toute la suite
+python -m pytest -v                                      # afficher le nom et le statut de chaque test
+python -m pytest tests/test_operators.py                 # exécuter un seul fichier
+python -m pytest tests/test_operators.py::test_subtract  # exécuter un seul test
+python -m pytest -k subtract                             # exécuter les tests dont le nom contient « subtract »
 ```
 
-Tous les tests doivent passer avant qu'une pull request soit fusionnée dans `main`.
+À la fin, pytest affiche un résumé, p. ex. `45 passed`. En cas d'échec, chaque test fautif
+est listé (`FAILED ...`) avec la valeur obtenue et la valeur attendue.
+
+### Ce qui est testé
+
+| Fichier                     | Niveau        | Ce qui est vérifié |
+|-----------------------------|---------------|--------------------|
+| `tests/test_operators.py`   | Unitaire      | `add`, `subtract`, `multiply`, `divide` appelées directement : résultats usuels, décimaux, ordre des opérandes, produit par zéro, quotient réel, division par zéro. |
+| `tests/test_calculate.py`   | Analyse       | `calculate` : les 4 opérations de bout en bout, espaces ignorés, décimaux, résultat de type `float`, et le message d'erreur de chaque expression invalide (vide, plusieurs opérateurs, sans opérateur, opérateur au début/à la fin, opérande non numérique). |
+| `tests/test_app.py`         | Intégration   | Route `/` : GET (page affichée, écran vide, CSS chargé), POST valide (résultat affiché), POST invalide et division par zéro (message `Error: ...` au lieu d'une page d'erreur). |
+| `tests/test_interface.py`   | Gabarit HTML  | `templates/index.html` : chaque bouton affiche exactement le caractère qu'il ajoute à l'écran, et tous les chiffres, opérateurs, `C` et `=` sont présents. |
+| `tests/conftest.py`         | —             | Fixture `client` partagée (client de test Flask, sans lancer de serveur). |
+
+**Non couvert :** le JavaScript dans un vrai navigateur (clics, effacement) et le rendu visuel
+du CSS. Les détails et hypothèses sont dans [`tests/README.md`](tests/README.md).
+
+### Règle de l'équipe
+
+Tous les tests doivent passer avant qu'une pull request soit fusionnée dans `main`. Lorsqu'un
+bogue est découvert, on écrit d'abord un test qui échoue, puis on ouvre une issue qui le
+référence (voir [Flux de contribution](#flux-de-contribution)).
 
 ## Flux de contribution
 
